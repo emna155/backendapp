@@ -5,6 +5,9 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 const http =require('http');
+require('dotenv').config();
+
+const { connectToMongoDB }=require('./db/db');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -36,11 +39,11 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.json('error');
 });
 
-//mongodb+srv://emna:BRn1TNaaMUSnLozZ@cluster0.ib9mpub.mongodb.net/
 const server=http.createServer(app);
-server.listen(5000,()=>{
+server.listen(process.env.Port,()=>{
   console.log('sever is running on port 5000');
+  connectToMongoDB();
 });
