@@ -7,5 +7,6 @@ router.post('/createAdmin', userController.createAdmin);
 router.get('/getAllUsers', userController.getAllUsers);
 router.get('/getClient', userController.getClient);
 router.get('/getAdmin', userController.getAdmin);
-
+router.delete('/deleteUserById/:id',userController.deleteUserById);
+router.put('/updateByID/:id',userController.updateByID);
 module.exports = router;

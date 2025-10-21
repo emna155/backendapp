@@ -72,3 +72,26 @@ module.exports.getClient = async (req, res) => {
     res.status(500).json({ message: "Server error", error });
   }
 };
+module.exports.deleteUserById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const users = await userModel.findByIdAndDelete(id);
+    res.status(200).json({ message: "User deleted successfully", users });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+module.exports.updateByID = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { nom, prenom, age } = req.body;
+    const users = await userModel.findByIdAndUpdate(
+      id,
+      { nom, prenom, age },
+      { new: true }
+    );
+    res.status(200).json({ users });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
