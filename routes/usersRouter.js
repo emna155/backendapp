@@ -9,4 +9,5 @@ router.get('/getClient', userController.getClient);
 router.get('/getAdmin', userController.getAdmin);
 router.delete('/deleteUserById/:id',userController.deleteUserById);
 router.put('/updateByID/:id',userController.updateByID);
+router.get("/:id/commandes", userController.getUserWithCommandes);
 module.exports = router;

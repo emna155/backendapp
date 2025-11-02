@@ -6,13 +6,15 @@ const produitModel=new mongoose.Schema(
      description:String,
      prix:Number,
      image:String,
-     stock:Number,
-     categories:String   
+     quantiteStock:Number,
+     categorie: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Categorie'}  ]  ,
+    
+     
     }
 );
 
 produitModel.post('save', function(doc, next) {
-    console.log('New user created: ', doc);
+    console.log('New produit created: ', doc);
     next();
 });
 

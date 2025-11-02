@@ -1,23 +1,24 @@
 const produitModel = require("../models/produitModel");
-
+const categorieModel=require("../models/categorieModel")
 module.exports.addProduit = async (req, res) => {
   try {
     // logique
-    const { nom, prenom, description, prix, stock, categories } = req.body;
+    const { nom,  description, prix, stock, categorie } = req.body;
 
     const newProduit = new produitModel({
       nom,
       description,
       prix,
-
       stock,
-      categories,
+      categorie:id_Categorie,
     });
     await newProduit.save();
+    await categorieModel.findByIdAndUpdate(categorie, { $push: { Produit: newProduit._id } });
     res
       .status(201)
       .json({ newProduit, message: "Produit created successfully" });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Server error", error });
   }
 };

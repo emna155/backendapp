@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
-const bcrypt=require('bcrypt');
-
+const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema(
   {
@@ -33,28 +32,42 @@ const userSchema = new mongoose.Schema(
 
     //Admin
     adminCode: String,
+    commande:[{type:mongoose.Schema.Types.ObjectId,ref:'Commande'}]
   },
   { timestamps: true }
 );
-userSchema.pre('save',async function(next){
-    try {
-        const User = this;
-        const salt = await bcrypt.genSalt();
-        User.password =  await bcrypt.hash(User.password , salt);
-        User.Status = false;
-        next();
-    } catch (error) {
-        next(error);
-    }
-})
-
-userSchema.post('save', function(doc, next) {
-    console.log('New user created: ', doc);
+userSchema.pre("save", async function (next) {
+  try {
+    const User = this;
+    const salt = await bcrypt.genSalt();
+    User.password = await bcrypt.hash(User.password, salt);
+    User.Status = false;
     next();
+  } catch (error) {
+    next(error);
+  }
 });
+
+userSchema.post("save", function (doc, next) {
+  console.log("New user created: ", doc);
+  next();
+});
+userSchema.statics.login=async function(email,password){
+  const user =await this.findOne({email});
+  if(user){
+    const auth=await bcrypt.compare(password,user.password);
+    if(auth){
+      return user;
+    }
+    throw Error('incorrect password');
+  }
+  throw Error('incorrect email')
+}
+
 
 
 
 
 const User = mongoose.model("User", userSchema);
 module.exports = User;
+ 
