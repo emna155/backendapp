@@ -106,10 +106,10 @@ module.exports.getUserWithCommandes = async (req, res) => {
 };
 
 const jwt=require("jsonwebtoken");
-const maxAge=1*60;
+const maxAge=1*60*60;
 const createToken=(id)=>{
 
-  return jwt.sign({id},process.env.SECRET_KEY,{expiresIn: maxAge,
+  return jwt.sign({id},"emna",{expiresIn: maxAge,
   });
 }
 
@@ -121,9 +121,29 @@ module.exports.login=async(req,res)=>{
     res.status(200).json({message:"email and password are required"});
     }
     const user=await userModel.login(email,password);
+    const token=createToken(user._id);
+    res.cookie("jwt",token,{httpOnly:true, maxAge: maxAge*1000})
     res.status(200).json({message:"login successful",user});
   }
   catch(error){
-    res.status(500).json({ message: "Erreur serveur", error });
+    res.status(500).json({ message:  error.message });
   }
 }
+module.exports.getUseAuth = async (req, res) => {
+  try {
+    const id  = req.user._id;
+    const user = await userModel.findById(id).populate("users");
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+module.exports.logout = (req, res) => {
+  try {
+      //res.cookie("jwt", "", { maxAge: 1 });
+      res.clearCookie("jwt");
+      res.status(200).json({ message: "Logout successful" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+  }

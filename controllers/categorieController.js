@@ -17,7 +17,7 @@ exports.createCategorie = async (req, res) => {
 };
 module.exports.getAllCategorie = async (req, res) => {
     try {
-      const Categories = await categorieModel.find().populate("Produit");
+      const Categories = await categorieModel.find().populate("produit");
       res.status(200).json(Categories);
     } catch (error) {
       res.status(500).json({ message: "Server error", error });

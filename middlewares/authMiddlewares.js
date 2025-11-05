@@ -1,23 +1,35 @@
 const jwt = require('jsonwebtoken');
 const userModel=require("../models/userSchema")
 
-const requireAuthUser = (req, res, next) => {
-
-    const token=req.cookies.jwt;
-if(token){
-    jwt.verify(token,"",async(err,decodedToken)=>{
-        if(err){
-            res.status(401).json({ message: 'Token invalide ' })
-        }
-        const user=await userModel.find(decodedToken.id);
-        if(user){
-            req.user=user;
+const requireAuthUser = async (req, res, next) => {
+    //const token = req.headers.authorization?.split(" ")[1]; //frontend
+    const token = req.cookies.jwt;
+    console.log("Token from cookies:", token);
+    if (token) {
+      //
+      jwt.verify(token, "emna", async (err, decodedToken) => {
+        if (err) {
+          throw new Error("Unauthorized: Invalid token");
+        } else {
+          const user = await userModel.findById(decodedToken.id);
+          if (user) {
+            console.log("Authenticated user:", user);
+            //  if (user.Ban == false) {
+            // if (user.Status == true) {
+            req.user = user;
             next();
-        }else{
-            res.status(401).json({message:'Unauthorized'})
+            //  }
+            //    res.status(403).json({ message: "Your account is not activated" });
+            //   }
+            //    res.status(403).json({ message: "Your account is banned" });
+          } else {
+            throw new Error("Unauthorized: User not found");
+          }
         }
-    })
-}
-
-};
-
+      });
+    } else {
+      res.status(401).json({ message: "Unauthorized: No token provided" });
+    }
+  };
+  
+module.exports = { requireAuthUser };

@@ -49,10 +49,10 @@ module.exports.deleteById = async (req, res) => {
 module.exports.updateByID = async (req, res) => {
   try {
     const { id } = req.params;
-    const {} = req.body;
+    const emna = req.body;
     const Commandes = await commandeModel.findByIdAndUpdate(
       id,
-      {},
+      emna,
       { new: true }
     );
     res.status(200).json({ Commandes });

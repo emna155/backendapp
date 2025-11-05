@@ -10,10 +10,10 @@ module.exports.addProduit = async (req, res) => {
       description,
       prix,
       stock,
-      categorie:id_Categorie,
+      categorie,
     });
     await newProduit.save();
-    await categorieModel.findByIdAndUpdate(categorie, { $push: { Produit: newProduit._id } });
+    await categorieModel.findByIdAndUpdate(categorie, { $push: { produit: newProduit._id } });
     res
       .status(201)
       .json({ newProduit, message: "Produit created successfully" });
